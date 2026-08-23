@@ -190,4 +190,4 @@ env.close()
 
 ---
 
-*Trained and maintained by [hwihwalab](https://huggingface.co/hwihwalab/pusher-v5-ppo) & [Hwihwa-Lab](https://github.com/Hwihwa-Lab/pusher-v5-ppo).*
+*Trained and deployed with [Pusher AI Hub](https://huggingface.co/hwihwalab/pusher-v5-ppo) by **hwihwalab**.*
