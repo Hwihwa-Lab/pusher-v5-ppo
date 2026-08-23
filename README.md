@@ -55,27 +55,27 @@ This repository contains an advanced continuous deep reinforcement learning syst
 
 ```mermaid
 flowchart TD
-    subgraph Web_Cockpit [1-Screen Zero-Scroll Robotics Telemetry Cockpit]
-        W1[HTML5 / CSS3 / Vanilla JS Client] <-->|WebSocket /ws/simulation @ 30 FPS| S1[FastAPI High-Performance Engine]
-        S1 -->|Base64 JPEG Physics Stream| W1
-        S1 -->|7-DOF Bipolar Torques [-2, +2] Nm| W1
-        S1 -->|3D Vector Coordinates: Tip, Obj, Goal| W1
-        W1 -->|Control Commands: Start, Pause, Step, Reset, Policy| S1
+    subgraph Web_Cockpit ["1-Screen Zero-Scroll Robotics Telemetry Cockpit"]
+        W1["HTML5 / CSS3 / Vanilla JS Client"] <-->|"WebSocket /ws/simulation @ 30 FPS"| S1["FastAPI High-Performance Engine"]
+        S1 -->|"Base64 JPEG Physics Stream"| W1
+        S1 -->|"7-DOF Bipolar Torques (-2 to +2 Nm)"| W1
+        S1 -->|"3D Vector Coordinates (Tip, Obj, Goal)"| W1
+        W1 -->|"Control Commands (Start, Pause, Step, Reset, Policy)"| S1
     end
 
-    subgraph Analytics_Deck [4-Tab Analytics & Replay Deck]
-        T1[Tab 1: Live Telemetry Dynamics - Raw & 20-Ep Moving Average]
-        T2[Tab 2: Milestone Replay Deck - 16:9 Widescreen Video Gallery]
-        T3[Tab 3: Live PPO Logs - Algorithmic Console Stream]
-        T4[Tab 4: Environment & Reward Math Specifications]
+    subgraph Analytics_Deck ["4-Tab Analytics & Replay Deck"]
+        T1["Tab 1: Live Telemetry Dynamics (Raw & 20-Ep Moving Average)"]
+        T2["Tab 2: Milestone Replay Deck (16:9 Widescreen Video Gallery)"]
+        T3["Tab 3: Live PPO Logs (Algorithmic Console Stream)"]
+        T4["Tab 4: Environment & Reward Math Specifications"]
     end
 
-    subgraph Deep_RL_Pipeline [Stable-Baselines3 PPO Training Loop]
-        TR1[train.py / Background Thread] --> TR2[MuJoCo Pusher-v5 Physics]
-        TR2 --> TR3[VisualProgressCallback]
-        TR3 --> TR4[Step 0, 10k, 20k, 30k MP4 & GIF Videos]
-        TR3 --> TR5[Training Plots & Metrics JSON]
-        TR4 & TR5 --> TR6[Single-Click ZIP Archive: ppo_pusher_bundle.zip]
+    subgraph Deep_RL_Pipeline ["Stable-Baselines3 PPO Training Loop"]
+        TR1["train.py / Background Thread"] --> TR2["MuJoCo Pusher-v5 Physics"]
+        TR2 --> TR3["VisualProgressCallback"]
+        TR3 --> TR4["Step 0 to 300k MP4 & GIF Videos"]
+        TR3 --> TR5["Training Plots & Metrics JSON"]
+        TR4 & TR5 --> TR6["Single-Click ZIP Archive: ppo_pusher_bundle.zip"]
     end
 ```
 

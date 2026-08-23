@@ -35,27 +35,27 @@
 
 ```mermaid
 flowchart TD
-    subgraph Live_Web_Cockpit [1-화면 제로 스크롤 로보틱스 관제 콕핏]
-        W1[HTML5 / CSS3 / Vanilla JS 클라이언트] <-->|WebSocket /ws/simulation @ 30 FPS| S1[FastAPI 고성능 서버]
-        S1 -->|Base64 JPEG 물리 스트림| W1
-        S1 -->|7-DOF 바이폴라 모터 토크 [-2.0, +2.0] Nm| W1
-        S1 -->|3D 데카르트 좌표: 팁, 물체, 골대| W1
-        W1 -->|제어 명령: Start, Pause, Step, Reset, Policy| S1
+    subgraph Live_Web_Cockpit ["1-화면 제로 스크롤 로보틱스 관제 콕핏"]
+        W1["HTML5 / CSS3 / Vanilla JS 클라이언트"] <-->|"WebSocket /ws/simulation @ 30 FPS"| S1["FastAPI 고성능 서버"]
+        S1 -->|"Base64 JPEG 물리 스트림"| W1
+        S1 -->|"7-DOF 바이폴라 모터 토크 (-2.0 ~ +2.0 Nm)"| W1
+        S1 -->|"3D 데카르트 좌표: 팁, 물체, 골대"| W1
+        W1 -->|"제어 명령: Start, Pause, Step, Reset, Policy"| S1
     end
 
-    subgraph Analytics_Deck [4-탭 분석 및 리플레이 덱]
-        T1[1탭: 실시간 텔레메트리 차트 - Raw 보상 & 20-Ep 이동평균선]
-        T2[2탭: 마일스톤 리플레이 갤러리 - 16:9 와이드 비디오 카드]
-        T3[3탭: 실시간 PPO 터미널 로그 - 학습 진행률 & FPS 콘솔]
-        T4[4탭: 환경 스펙 & 보상 함수 수학 공식]
+    subgraph Analytics_Deck ["4-탭 분석 및 리플레이 덱"]
+        T1["1탭: 실시간 텔레메트리 차트 (Raw 보상 & 20-Ep 이동평균선)"]
+        T2["2탭: 마일스톤 리플레이 갤러리 (16:9 와이드 비디오 카드)"]
+        T3["3탭: 실시간 PPO 터미널 로그 (학습 진행률 & FPS 콘솔)"]
+        T4["4탭: 환경 스펙 & 보상 함수 수학 공식"]
     end
 
-    subgraph Deep_RL_Pipeline [PPO 강화학습 파이프라인]
-        TR1[train.py / 백그라운드 학습 스레드] --> TR2[Pusher-v5 물리 엔진]
-        TR2 --> TR3[VisualProgressCallback]
-        TR3 --> TR4[Step 0, 10k, 20k, 30k 비디오(MP4) 및 GIF]
-        TR3 --> TR5[4분할 학습 분석 그래프 & metrics.json]
-        TR4 & TR5 --> TR6[원클릭 압축 패키지: ppo_pusher_bundle.zip]
+    subgraph Deep_RL_Pipeline ["PPO 강화학습 파이프라인"]
+        TR1["train.py / 백그라운드 학습 스레드"] --> TR2["Pusher-v5 물리 엔진"]
+        TR2 --> TR3["VisualProgressCallback"]
+        TR3 --> TR4["Step 0부터 300k까지의 비디오(MP4) 및 GIF"]
+        TR3 --> TR5["4분할 학습 분석 그래프 & metrics.json"]
+        TR4 & TR5 --> TR6["원클릭 압축 패키지: ppo_pusher_bundle.zip"]
     end
 ```
 
