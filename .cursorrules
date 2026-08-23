@@ -1,0 +1,14 @@
+# 🛑 AI Vibe-Coding Defense Rules for Pusher-v5 RL Project
+
+**Rule 1. Mandatory Document Load (문서 강제 확인 의무)**
+어떤 코드를 작성하거나 디버깅/수정하기 전에, 반드시 루트 폴더의 `DOCS_AI_CODING_PROTOCOL.md`를 먼저 로드하여 현재 작업과 관련된 상세 기획 문서(`DOCS_*.md`)가 무엇인지 파악하고 그것부터 읽어야 합니다. 기획 및 규격을 무시한 채 임의로 코딩(Vibe Coding)하는 것을 엄격히 금지합니다.
+
+**Rule 2. Auto-Sync Documentation (자동 문서 동기화 의무)**
+강화학습 하이퍼파라미터, 환경 설정(Pusher-v5), 메트릭 구조, 시각화 HUD/대시보드 규격, CLI 옵션을 변경한 경우, 사용자가 명시적으로 지시하지 않더라도 AI는 무조건 스스로 연관된 모든 `DOCS_*.md` 문서를 찾아 최신 상태로 동기화해야 합니다. 문서 업데이트 누락은 치명적인 버그로 간주합니다.
+
+**Rule 3. Anti-Hallucination & Simulation Fidelity (가상 수치 및 임의 규격 조작 금지)**
+- Gymnasium `Pusher-v5` 환경의 관측 공간(23차원), 행동 공간(7차원), MuJoCo 물리 보상 키(`reward_dist`, `reward_near`, `reward_ctrl`)를 임의로 왜곡하거나 가짜 더미(Dummy) 데이터를 시각화 대시보드에 날조하여 주입하지 마십시오.
+- 실제 시뮬레이션 및 SB3 모델 추론 결과만을 기반으로 시각화 및 평가를 수행해야 합니다.
+
+**Rule 4. Visual-First & Artifact Integrity (시각화 파이프라인 및 패키징 보존 의무)**
+- `train.py`, `visualizer.py`, `evaluate.py` 수정 시 **실시간 HUD 오버레이**, **단계별 MP4/GIF 생성**, **4분할 분석 차트**, **웹 대시보드(HTML)**, **단일 ZIP 압축 패키징** 기능이 절대 훼손되거나 누락되지 않도록 격리 및 모듈성을 유지해야 합니다.

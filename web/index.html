@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pusher-v5 PPO &bull; Robotics Simulation & RL Control Cockpit</title>
+    <!-- Google Fonts: Plus Jakarta Sans + Fira Code -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="cockpit-container">
+        <!-- Top Navigation Bar -->
+        <header class="cockpit-header">
+            <div class="brand-cluster">
+                <div class="brand-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 8V4H8"/>
+                        <rect width="16" height="12" x="4" y="8" rx="2"/>
+                        <path d="M2 14h2"/>
+                        <path d="M20 14h2"/>
+                        <path d="M15 13v2"/>
+                        <path d="M9 13v2"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-title">PUSHER-v5 PPO AI HUB</h1>
+                    <span class="brand-subtitle">MuJoCo 7-DOF Robotic Continuous Control &bull; Stable-Baselines3</span>
+                </div>
+            </div>
+
+            <!-- Mode Switcher Pill -->
+            <div class="mode-switcher-group" data-tooltip="Switch active cockpit operating mode">
+                <button class="mode-pill-btn active" id="btnModeSim">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <span>Autonomous Simulation Mode</span>
+                </button>
+                <button class="mode-pill-btn" id="btnModeTrain">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    <span>Live Training Mode</span>
+                </button>
+            </div>
+
+            <div class="header-telemetry">
+                <div class="badge-pill" id="connStatus" data-tooltip="WebSocket stream connection status">
+                    <span class="status-indicator disconnected"></span>
+                    <span class="status-label">CONNECTING</span>
+                </div>
+                <div class="badge-pill" data-tooltip="Physics simulation engine">
+                    <span class="pill-dim">ALGORITHM:</span>
+                    <span class="pill-bright">PPO (MlpPolicy)</span>
+                </div>
+                <div class="badge-pill" data-tooltip="Active action selection policy">
+                    <span class="pill-dim">POLICY:</span>
+                    <span class="pill-bright text-cyan" id="currentPolicyBadge">Trained PPO</span>
+                </div>
+                <a href="/api/bundle/download" class="btn btn-outline-cyan btn-sm" data-tooltip="Download complete artifact bundle (ZIP)">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    <span>Download Bundle</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- Main Zero-Scroll 2-Column Cockpit Layout -->
+        <main class="cockpit-main-layout">
+            <!-- Left Column: Physics Viewport & Real-time Telemetry Gauges -->
+            <div class="layout-column left-col">
+                <!-- 1. Live Viewport Card -->
+                <section class="card viewport-card">
+                    <div class="card-head">
+                        <div class="head-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan">
+                                <polygon points="23 7 16 12 23 17 23 7"/>
+                                <rect width="14" height="14" x="1" y="5" rx="2" ry="2"/>
+                            </svg>
+                            <span>Live 3D MuJoCo Physics Stream</span>
+                        </div>
+                        <div class="head-meta">
+                            <span class="meta-tag text-emerald" id="fpsDisplay">30 FPS</span>
+                            <span class="meta-tag" id="epDisplay">Ep #1</span>
+                            <span class="meta-tag" id="stepDisplay">Step 0</span>
+                        </div>
+                    </div>
+
+                    <!-- 3D Canvas Box -->
+                    <div class="viewport-box">
+                        <canvas id="simCanvas" width="480" height="480"></canvas>
+                        <div class="viewport-blanket" id="viewportPlaceholder">
+                            <div class="cyber-spinner"></div>
+                            <div class="placeholder-text">
+                                <span>SIMULATION STANDBY</span>
+                                <small>Click <strong>Start Simulation</strong> or press <kbd>Space</kbd></small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KPI Readout Strip -->
+                    <div class="kpi-strip">
+                        <div class="kpi-cell" data-tooltip="Total cumulative reward accumulated in current episode">
+                            <span class="kpi-label">Ep Return</span>
+                            <span class="kpi-value text-emerald" id="telReturn">+0.00</span>
+                        </div>
+                        <div class="kpi-cell" data-tooltip="Instantaneous reward for the last step">
+                            <span class="kpi-label">Step Reward</span>
+                            <span class="kpi-value text-cyan" id="telStepReward">+0.000</span>
+                        </div>
+                        <div class="kpi-cell" data-tooltip="Euclidean distance from cylinder object to target goal">
+                            <span class="kpi-label">Obj &rarr; Goal</span>
+                            <span class="kpi-value text-amber" id="telDistGoal">0.000 m</span>
+                        </div>
+                        <div class="kpi-cell" data-tooltip="Euclidean distance from fingertip to cylinder object">
+                            <span class="kpi-label">Arm &rarr; Obj</span>
+                            <span class="kpi-value text-purple" id="telDistArm">0.000 m</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. 7-DOF Action Space Torque & 3D Spatial Vector Card -->
+                <section class="card telemetry-card">
+                    <div class="card-head">
+                        <div class="head-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                            </svg>
+                            <span>7-DOF Action Torque & 3D Vector State</span>
+                        </div>
+                        <span class="range-badge">Range: [-2.0, +2.0] Nm</span>
+                    </div>
+
+                    <!-- 7-DOF Bipolar Action Torque Matrix -->
+                    <div class="subpanel">
+                        <div class="subpanel-title">7-DOF Motor Action Torque (Bipolar &bull; J1~J7)</div>
+                        <div class="bipolar-torque-matrix" id="torqueGrid">
+                            <!-- Populated dynamically by JS with positive (Cyan) & negative (Red) bars -->
+                        </div>
+                    </div>
+
+                    <!-- 3D Vector Coordinate Tracker -->
+                    <div class="subpanel">
+                        <div class="subpanel-title">3D Cartesian Vectors (X, Y, Z in meters)</div>
+                        <div class="coordinates-grid">
+                            <div class="coord-box" data-tooltip="End-effector fingertip position in MuJoCo world frame">
+                                <div class="coord-tag text-purple">Fingertip (Tip)</div>
+                                <div class="coord-vector">
+                                    <span class="axis-chip axis-x"><small>X</small><b id="coordTipX">0.00</b></span>
+                                    <span class="axis-chip axis-y"><small>Y</small><b id="coordTipY">0.00</b></span>
+                                    <span class="axis-chip axis-z"><small>Z</small><b id="coordTipZ">0.00</b></span>
+                                </div>
+                            </div>
+                            <div class="coord-box" data-tooltip="Cylinder object position to be pushed">
+                                <div class="coord-tag text-amber">Cylinder (Obj)</div>
+                                <div class="coord-vector">
+                                    <span class="axis-chip axis-x"><small>X</small><b id="coordObjX">0.00</b></span>
+                                    <span class="axis-chip axis-y"><small>Y</small><b id="coordObjY">0.00</b></span>
+                                    <span class="axis-chip axis-z"><small>Z</small><b id="coordObjZ">0.00</b></span>
+                                </div>
+                            </div>
+                            <div class="coord-box" data-tooltip="Target destination position on table">
+                                <div class="coord-tag text-emerald">Target (Goal)</div>
+                                <div class="coord-vector">
+                                    <span class="axis-chip axis-x"><small>X</small><b id="coordGoalX">0.00</b></span>
+                                    <span class="axis-chip axis-y"><small>Y</small><b id="coordGoalY">0.00</b></span>
+                                    <span class="axis-chip axis-z"><small>Z</small><b id="coordGoalZ">0.00</b></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Distance to Target Precision Gauge -->
+                    <div class="subpanel">
+                        <div class="dist-header">
+                            <span class="subpanel-title">Target Proximity Alignment</span>
+                            <span class="dist-num text-amber" id="distGoalPercent">0.000 m (Standby)</span>
+                        </div>
+                        <div class="precision-track" data-tooltip="Distance gauge: Green indicates reaching within the success threshold (~0.05m)">
+                            <div class="precision-fill" id="distGoalProgress" style="width: 15%;"></div>
+                            <div class="target-marker" title="Success Threshold (~0.05m)"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: Interactive Controls & Tabbed Analytics Deck -->
+            <div class="layout-column right-col">
+                <!-- 1. Interactive Control & RL Engine Card -->
+                <section class="card control-card">
+                    <div class="card-head">
+                        <div class="head-title">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan">
+                                <circle cx="12" cy="12" r="3"/>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                            </svg>
+                            <span>PPO Training & Interactive Control Center</span>
+                        </div>
+                    </div>
+
+                    <div class="control-sections-grid">
+                        <!-- 1. Primary Execution -->
+                        <div class="control-box">
+                            <div class="box-label">Simulation Execution</div>
+                            <div class="ctrl-row row-1 action-grid">
+                                <button id="btnStartSim" class="btn btn-primary" data-tooltip="Start or resume continuous physics loop (Space)">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                    <span>Start Simulation</span>
+                                    <kbd class="btn-kbd">Space</kbd>
+                                </button>
+                                <button id="btnPauseSim" class="btn btn-secondary" data-tooltip="Pause live simulation execution">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
+                                    <span>Pause</span>
+                                </button>
+                            </div>
+                            <div class="ctrl-row row-2 action-grid">
+                                <button id="btnStepSim" class="btn btn-secondary" data-tooltip="Step physics forward by exactly 1 timestep (S)">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 4 15 12 5 20 5 4"/><line x1="19" y1="5" x2="19" y2="19"/></svg>
+                                    <span>Step Once</span>
+                                    <kbd class="btn-kbd">S</kbd>
+                                </button>
+                                <button id="btnResetSim" class="btn btn-warning" data-tooltip="Reset robotic arm, object and goal to random spawn (R)">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                                    <span>Reset Environment</span>
+                                    <kbd class="btn-kbd">R</kbd>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 2. Policy & View Options -->
+                        <div class="control-box">
+                            <div class="box-label">Policy & Viewport Options</div>
+                            <div class="ctrl-row row-1 action-grid">
+                                <button id="btnTogglePolicy" class="btn btn-accent" data-tooltip="Switch between Trained PPO policy and Random Exploration">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                                    <span>Switch Policy</span>
+                                </button>
+                                <button id="btnToggleHud" class="btn btn-secondary" data-tooltip="Toggle semi-transparent on-screen telemetry overlay (H)">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                    <span>Toggle HUD</span>
+                                    <kbd class="btn-kbd">H</kbd>
+                                </button>
+                            </div>
+                            <div class="ctrl-row row-2 speed-row">
+                                <span class="speed-title">Playback Rate:</span>
+                                <div class="chip-group">
+                                    <button class="chip" data-speed="0.5" data-tooltip="0.5x Slow motion">0.5x</button>
+                                    <button class="chip active" data-speed="1.0" data-tooltip="1.0x Real-time">1.0x</button>
+                                    <button class="chip" data-speed="2.0" data-tooltip="2.0x Fast-forward">2.0x</button>
+                                    <button class="chip" data-speed="4.0" data-tooltip="Max rate">MAX</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Deep RL Training Engine -->
+                        <div class="control-box training-block">
+                            <div class="box-label">Deep RL PPO Training Engine</div>
+                            <div class="ctrl-row row-1 preset-row">
+                                <select id="trainPresetSelect" class="preset-select" data-tooltip="Select target episode budget and estimated training duration">
+                                    <option value="50000_10000">500 Ep (50k Steps &bull; ~12s) - Quick</option>
+                                    <option value="200000_20000">2,000 Ep (200k Steps &bull; ~45s) - Basic</option>
+                                    <option value="500000_50000" selected>5,000 Ep (500k Steps &bull; ~1.8m) ★ Mature</option>
+                                    <option value="1000000_100000">10,000 Ep (1M Steps &bull; ~3.5m) - High-Prec</option>
+                                    <option value="custom">⚙️ Custom Settings...</option>
+                                </select>
+                            </div>
+                            <div class="train-inputs" id="customInputRow" style="display: none;">
+                                <div class="input-col">
+                                    <label>Timesteps</label>
+                                    <input type="number" id="trainTimesteps" value="500000" step="10000" min="5000">
+                                </div>
+                                <div class="input-col">
+                                    <label>Eval Freq</label>
+                                    <input type="number" id="trainEvalFreq" value="50000" step="5000" min="1000">
+                                </div>
+                            </div>
+                            <div class="ctrl-row row-2 train-actions">
+                                <button id="btnStartTrain" class="btn btn-emerald" data-tooltip="Launch PPO training in background thread">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                                    <span>Start Training</span>
+                                </button>
+                                <button id="btnQuickTrain" class="btn btn-outline-cyan" data-tooltip="Quick 10,000 timesteps evaluation run">
+                                    <span>Quick (10k)</span>
+                                </button>
+                            </div>
+                            <div class="train-progress-wrap">
+                                <div class="train-status-text" id="trainStatusMsg">Engine Ready (Standby)</div>
+                                <div class="train-track">
+                                    <div class="train-fill" id="trainProgressFill" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. Tabbed Analytics & Replay Deck Card (4 Tabs) -->
+                <section class="card bottom-card">
+                    <div class="tab-header">
+                        <div class="tab-buttons">
+                            <button class="tab-btn active" data-tab="tabChart" data-tooltip="Real-time rolling reward, 20-Ep moving average and goal distance dynamics">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                                <span>Live Telemetry Dynamics</span>
+                            </button>
+                            <button class="tab-btn" data-tab="tabMilestones" data-tooltip="Interactive milestone replay viewer with step and score badges">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 8 7 4-7 4Z"/></svg>
+                                <span>Milestone Replay Deck</span>
+                            </button>
+                            <button class="tab-btn" data-tab="tabLogs" data-tooltip="Live streaming algorithmic PPO console logs with FPS and returns">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                                <span>Live PPO Logs</span>
+                            </button>
+                            <button class="tab-btn" data-tab="tabSpecs" data-tooltip="MuJoCo Pusher-v5 environment specifications & reward formulation">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                <span>Environment Specs</span>
+                            </button>
+                        </div>
+                        <div class="deck-head-right">
+                            <span class="gallery-scroll-hint" id="galleryScrollHint" data-tooltip="Scroll horizontally with mouse wheel or drag scrollbar to view checkpoints">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                                <span>Scroll for Checkpoints (Step 0 &rarr; 300k)</span>
+                            </span>
+                            <button class="btn btn-sm btn-secondary" id="btnRefreshGallery" data-tooltip="Reload metrics and video checkpoints from disk">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+                                <span>Refresh Data</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab 1: Live Dynamics Chart -->
+                    <div class="tab-pane active" id="tabChart">
+                        <div class="chart-box">
+                            <canvas id="liveTelemetryChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Milestone Replay Deck (Widescreen Multi-Video Card Gallery) -->
+                    <div class="tab-pane" id="tabMilestones">
+                        <div class="milestone-gallery-container" id="milestoneGalleryContainer">
+                            <div class="gallery-loading-card">Loading milestone checkpoint videos...</div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Live PPO Terminal Logs -->
+                    <div class="tab-pane" id="tabLogs">
+                        <div class="terminal-deck">
+                            <div class="terminal-bar">
+                                <div class="terminal-dots">
+                                    <span class="term-dot red"></span>
+                                    <span class="term-dot yellow"></span>
+                                    <span class="term-dot green"></span>
+                                </div>
+                                <div class="terminal-title">Live Algorithmic Telemetry Console (PPO Streaming)</div>
+                                <div class="live-stream-badge">
+                                    <span class="status-indicator connected"></span>
+                                    <span>LIVE STREAM</span>
+                                </div>
+                            </div>
+                            <div class="terminal-body" id="terminalLogBody">
+                                <div class="log-line text-cyan">[SYSTEM] Pusher-v5 PPO Control Hub Initialized. Ready for training stream.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Environment & Math Specs -->
+                    <div class="tab-pane" id="tabSpecs">
+                        <div class="specs-grid">
+                            <div class="spec-card">
+                                <div class="spec-label">Observation Space (23-dim Continuous)</div>
+                                <div class="spec-val">7 Joint Angles + 7 Joint Velocities + Fingertip (3D) + Object (3D) + Goal (3D)</div>
+                            </div>
+                            <div class="spec-card">
+                                <div class="spec-label">Action Space (7-dim Continuous Torque)</div>
+                                <div class="spec-val">Torque control applied to 7 robot joints: Box(-2.0, 2.0, (7,), float32)</div>
+                            </div>
+                            <div class="spec-card">
+                                <div class="spec-label">Reward Function Formulation</div>
+                                <div class="spec-val">Reward = -1.25 &bull; ||Obj - Goal|| - 0.1 &bull; ||Action||<sup>2</sup> - ||Tip - Obj||</div>
+                            </div>
+                            <div class="spec-card">
+                                <div class="spec-label">PPO Hyperparameters</div>
+                                <div class="spec-val">MlpPolicy &bull; lr=3e-4 &bull; n_steps=2048 &bull; batch=64 &bull; n_epochs=10 &bull; clip=0.2 &bull; &gamma;=0.99</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Compact Bottom Status Footer -->
+        <footer class="cockpit-footer">
+            <span class="footer-brand">Pusher-v5 PPO Control Hub &bull; High-Density Telemetry &bull; MuJoCo Physics</span>
+            <div class="footer-shortcuts">
+                <span>Shortcuts:</span>
+                <kbd>Space</kbd> Start/Pause &bull;
+                <kbd>R</kbd> Reset &bull;
+                <kbd>S</kbd> Step &bull;
+                <kbd>H</kbd> HUD
+            </div>
+        </footer>
+    </div>
+
+    <!-- Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>
