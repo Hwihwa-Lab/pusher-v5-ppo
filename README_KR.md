@@ -154,13 +154,13 @@ env.close()
 
 ## 🛡️ AI 엔지니어링 거버넌스 및 문서 체계
 
-본 시스템은 강화학습 시뮬레이션의 물리적 무결성을 보존하고 바이브-코딩 드리프트를 방지하기 위해 정밀한 엔지니어링 문서 프로토콜을 준수합니다:
+본 시스템은 강화학습 시뮬레이션의 물리적 무결성을 보존하고 바이브-코딩 드리프트를 방지하기 위해 정밀한 엔지니어링 문서 프로토콜(GitHub 제공)을 준수합니다:
 
-- **[`.cursorrules`](.cursorrules)**: AI 코딩 방어 및 규칙 마스터 헌법
-- **[`DOCS_AI_CODING_PROTOCOL.md`](DOCS_AI_CODING_PROTOCOL.md)**: 코딩 표준 및 전체 문서 맵
-- **[`DOCS_SYSTEM_ARCHITECTURE.md`](DOCS_SYSTEM_ARCHITECTURE.md)**: 풀스택 시스템 및 WebSocket 아키텍처 명세서
-- **[`DOCS_DATA_SCHEMA.md`](DOCS_DATA_SCHEMA.md)**: 텔레메트리 패킷 프로토콜 및 REST 데이터 스키마
-- **[`DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md`](DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md)**: 벤치마크 평가 및 허깅페이스 배포 규격서
+- **[`.cursorrules`](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/.cursorrules)**: AI 코딩 방어 및 규칙 마스터 헌법
+- **[`DOCS_AI_CODING_PROTOCOL.md`](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/DOCS_AI_CODING_PROTOCOL.md)**: 코딩 표준 및 전체 문서 맵
+- **[`DOCS_SYSTEM_ARCHITECTURE.md`](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/DOCS_SYSTEM_ARCHITECTURE.md)**: 풀스택 시스템 및 WebSocket 아키텍처 명세서
+- **[`DOCS_DATA_SCHEMA.md`](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/DOCS_DATA_SCHEMA.md)**: 텔레메트리 패킷 프로토콜 및 REST 데이터 스키마
+- **[`DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md`](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md)**: 벤치마크 평가 및 허깅페이스 배포 규격서
 
 ---
 

@@ -132,6 +132,9 @@ def main():
         ".system_generated/*",
         ".tempmediaStorage/*",
         ".cursor/*",
+        ".cursorrules*",
+        "DOCS_*",
+        "eval_results/*",
         ".vscode/*"
     ]
 

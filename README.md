@@ -187,13 +187,13 @@ env.close()
 
 ## 🛡️ AI Governance & Documentation Architecture
 
-This repository is governed by rigorous engineering protocols to ensure simulation fidelity and prevent vibe-coding drift:
+This repository is governed by rigorous engineering protocols to ensure simulation fidelity and prevent vibe-coding drift (hosted on GitHub):
 
-- **[`.cursorrules`](.cursorrules)**: AI Vibe-Coding Defense Master Protocol
-- **[`DOCS_AI_CODING_PROTOCOL.md`](DOCS_AI_CODING_PROTOCOL.md)**: Coding Standards & Master Documentation Map
-- **[`DOCS_SYSTEM_ARCHITECTURE.md`](DOCS_SYSTEM_ARCHITECTURE.md)**: Full-Stack System & WebSocket Architecture Spec
-- **[`DOCS_DATA_SCHEMA.md`](DOCS_DATA_SCHEMA.md)**: WebSocket Telemetry Protocol & REST Data Schema
-- **[`DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md`](DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md)**: Benchmark Evaluation & Hugging Face Hub Pipeline
+- **[`.cursorrules`](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/.cursorrules)**: AI Vibe-Coding Defense Master Protocol
+- **[`DOCS_AI_CODING_PROTOCOL.md`](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/DOCS_AI_CODING_PROTOCOL.md)**: Coding Standards & Master Documentation Map
+- **[`DOCS_SYSTEM_ARCHITECTURE.md`](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/DOCS_SYSTEM_ARCHITECTURE.md)**: Full-Stack System & WebSocket Architecture Spec
+- **[`DOCS_DATA_SCHEMA.md`](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/DOCS_DATA_SCHEMA.md)**: WebSocket Telemetry Protocol & REST Data Schema
+- **[`DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md`](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md)**: Benchmark Evaluation & Hugging Face Hub Pipeline
 
 ---
 
