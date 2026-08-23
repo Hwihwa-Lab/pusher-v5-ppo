@@ -100,7 +100,7 @@ python app.py
 ```
 브라우저에서 **`http://localhost:8000`** 접속.
 
-### 3. 허깅페이스 스페이스 원클릭 자동 배포
+### 3. 허깅페이스 원클릭 자동 배포
 ```bash
 python deploy_to_hf.py
 ```
@@ -108,11 +108,66 @@ python deploy_to_hf.py
 ### 4. CLI 기반 독립 학습 및 모델 평가
 ```bash
 # PPO 에이전트 학습 실행
-python train.py --timesteps 50000 --eval_freq 10000
+python train.py --timesteps 300000 --eval_freq 30000
 
 # 학습 완료된 모델 독립 평가 및 비디오 추출
-python evaluate.py --model_path ./results/ppo_pusher.zip --episodes 3
+python evaluate.py --model_path ./results/ppo_pusher.zip --episodes 5
 ```
+
+---
+
+## 🐍 5줄 파이썬 빠른 평가 스니펫 (Quick Evaluation)
+
+본 리포지토리의 학습 완료 가중치를 불러와 5줄의 파이썬 코드로 즉시 시뮬레이션을 실행할 수 있습니다:
+
+```python
+import gymnasium as gym
+from stable_baselines3 import PPO
+
+# 1. Pusher-v5 환경 초기화 및 완성 가중치 로드
+env = gym.make("Pusher-v5", render_mode="human")
+model = PPO.load("results/ppo_pusher.zip")
+
+# 2. 결정론적 푸싱 제어 롤아웃 실행
+obs, _ = env.reset()
+done = False
+while not done:
+    action, _ = model.predict(obs, deterministic=True)
+    obs, reward, terminated, truncated, _ = env.step(action)
+    done = terminated or truncated
+
+env.close()
+```
+
+---
+
+## ⌨️ 키보드 단축키 안내 (Keyboard Shortcuts)
+
+| 단축키 | 조작 기능 | 설명 |
+| :---: | :--- | :--- |
+| **`Space`** | **시작 / 일시정지** | 실시간 30 FPS MuJoCo 물리 시뮬레이션 토글 |
+| **`R`** | **환경 초기화 (Reset)** | 로봇 팔, 원통 물체, 목표 골대를 새로운 랜덤 위치로 재배치 |
+| **`S`** | **1스텝 전진 (Step Once)** | 물리 엔진을 1단위 타임스텝(0.05초) 전진 |
+| **`H`** | **HUD 온오프 토글** | 캔버스 화면 위 텔레메트리 오버레이 표시/숨김 |
+
+---
+
+## 🛡️ AI 엔지니어링 거버넌스 및 문서 체계
+
+본 시스템은 강화학습 시뮬레이션의 물리적 무결성을 보존하고 바이브-코딩 드리프트를 방지하기 위해 정밀한 엔지니어링 문서 프로토콜을 준수합니다:
+
+- **[`.cursorrules`](.cursorrules)**: AI 코딩 방어 및 규칙 마스터 헌법
+- **[`DOCS_AI_CODING_PROTOCOL.md`](DOCS_AI_CODING_PROTOCOL.md)**: 코딩 표준 및 전체 문서 맵
+- **[`DOCS_SYSTEM_ARCHITECTURE.md`](DOCS_SYSTEM_ARCHITECTURE.md)**: 풀스택 시스템 및 WebSocket 아키텍처 명세서
+- **[`DOCS_DATA_SCHEMA.md`](DOCS_DATA_SCHEMA.md)**: 텔레메트리 패킷 프로토콜 및 REST 데이터 스키마
+- **[`DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md`](DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md)**: 벤치마크 평가 및 허깅페이스 배포 규격서
+
+---
+
+## 🔗 오픈소스 공식 링크 (Open Source Hubs)
+
+- 🐙 **GitHub 저장소**: [https://github.com/Hwihwa-Lab/pusher-v5-ppo](https://github.com/Hwihwa-Lab/pusher-v5-ppo)
+- 🤗 **Hugging Face 모델 허브**: [https://huggingface.co/hwihwalab/pusher-v5-ppo](https://huggingface.co/hwihwalab/pusher-v5-ppo)
 
 ---
 

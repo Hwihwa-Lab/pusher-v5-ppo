@@ -121,13 +121,69 @@ python deploy_to_hf.py
 ### 4. Standalone CLI Training & Evaluation
 ```bash
 # Train PPO agent
-python train.py --timesteps 50000 --eval_freq 10000
+python train.py --timesteps 300000 --eval_freq 30000
 
 # Evaluate trained model
-python evaluate.py --model_path ./results/ppo_pusher.zip --episodes 3
+python evaluate.py --model_path ./results/ppo_pusher.zip --episodes 5
 ```
+
+---
+
+## 🐍 Quick Python Evaluation Snippet
+
+You can load and evaluate this pre-trained agent in 5 lines of Python using Stable-Baselines3:
+
+```python
+import gymnasium as gym
+from stable_baselines3 import PPO
+
+# 1. Initialize Pusher-v5 environment & load model
+env = gym.make("Pusher-v5", render_mode="human")
+model = PPO.load("results/ppo_pusher.zip")
+
+# 2. Run deterministic pushing evaluation
+obs, _ = env.reset()
+done = False
+while not done:
+    action, _ = model.predict(obs, deterministic=True)
+    obs, reward, terminated, truncated, _ = env.step(action)
+    done = terminated or truncated
+
+env.close()
+```
+
+---
+
+## ⌨️ Keyboard Shortcuts Reference
+
+| Key | Action | Description |
+| :---: | :--- | :--- |
+| **`Space`** | **Start / Pause** | Toggle 30 FPS MuJoCo physical simulation stream |
+| **`R`** | **Reset Environment** | Reset robotic arm, cylinder object, and target goal to new random positions |
+| **`S`** | **Step Once** | Advance physics engine forward by 1 discrete timestep (0.05s) |
+| **`H`** | **Toggle HUD** | Show or hide on-canvas telemetry data overlay |
+
+---
+
+## 🛡️ AI Governance & Documentation Architecture
+
+This repository is governed by rigorous engineering protocols to ensure simulation fidelity and prevent vibe-coding drift:
+
+- **[`.cursorrules`](.cursorrules)**: AI Vibe-Coding Defense Master Protocol
+- **[`DOCS_AI_CODING_PROTOCOL.md`](DOCS_AI_CODING_PROTOCOL.md)**: Coding Standards & Master Documentation Map
+- **[`DOCS_SYSTEM_ARCHITECTURE.md`](DOCS_SYSTEM_ARCHITECTURE.md)**: Full-Stack System & WebSocket Architecture Spec
+- **[`DOCS_DATA_SCHEMA.md`](DOCS_DATA_SCHEMA.md)**: WebSocket Telemetry Protocol & REST Data Schema
+- **[`DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md`](DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md)**: Benchmark Evaluation & Hugging Face Hub Pipeline
+
+---
+
+## 🔗 Open Source Hubs & Project Links
+
+- 🐙 **GitHub Repository**: [https://github.com/Hwihwa-Lab/pusher-v5-ppo](https://github.com/Hwihwa-Lab/pusher-v5-ppo)
+- 🤗 **Hugging Face Model Hub**: [https://huggingface.co/hwihwalab/pusher-v5-ppo](https://huggingface.co/hwihwalab/pusher-v5-ppo)
 
 ---
 
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
