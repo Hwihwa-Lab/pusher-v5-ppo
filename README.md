@@ -2,6 +2,7 @@
 language:
 - en
 - ko
+license: mit
 tags:
 - reinforcement-learning
 - deep-reinforcement-learning
