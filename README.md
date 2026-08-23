@@ -44,7 +44,7 @@ model-index:
 [![Language: 한국어](https://img.shields.io/badge/Language-한국어-green)](README_KR.md)
 [![Hugging Face Hub](https://img.shields.io/badge/🤗%20Hugging%20Face-Model%20Hub-orange)](https://huggingface.co/hwihwalab/pusher-v5-ppo)
 [![GitHub Repository](https://img.shields.io/badge/GitHub-Repository-181717?style=flat&logo=github)](https://github.com/Hwihwa-Lab/pusher-v5-ppo)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/LICENSE)
 [![Gymnasium](https://img.shields.io/badge/Gymnasium-MuJoCo%20Pusher--v5-0080FF)](https://gymnasium.farama.org/environments/mujoco/pusher/)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-EE4C2C?style=flat&logo=pytorch)](https://pytorch.org)
 [![Stable-Baselines3](https://img.shields.io/badge/Stable--Baselines3-PPO-brightgreen)](https://stable-baselines3.readthedocs.io)
@@ -221,7 +221,7 @@ This repository is governed by rigorous engineering protocols to ensure simulati
 ---
 
 ## 📄 License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/LICENSE) file for details.
 
 ---
 
