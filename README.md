@@ -4,17 +4,37 @@ language:
 - ko
 tags:
 - reinforcement-learning
+- deep-reinforcement-learning
 - stable-baselines3
 - ppo
 - continuous-control
 - mujoco
+- pusher
 - pusher-v5
 - robotics
+- robot
 - robot-arm
+- robotic-manipulation
+- manipulation
 - 7-dof
 - teleoperation
+- gymnasium
+- pytorch
 pipeline_tag: reinforcement-learning
 library_name: stable-baselines3
+model-index:
+- name: pusher-v5-ppo
+  results:
+  - task:
+      type: reinforcement-learning
+      name: Reinforcement Learning
+    dataset:
+      name: Gymnasium MuJoCo Pusher-v5
+      type: gymnasium/pusher-v5
+    metrics:
+    - type: mean_reward
+      value: -32.42
+      name: Mean Evaluation Reward (5-Ep Average)
 ---
 
 # 🦾 Pusher-v5 PPO // AI Hub & Live Control Cockpit
