@@ -162,6 +162,20 @@ env.close()
 - **[`DOCS_DATA_SCHEMA.md`](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/DOCS_DATA_SCHEMA.md)**: 텔레메트리 패킷 프로토콜 및 REST 데이터 스키마
 - **[`DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md`](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md)**: 벤치마크 평가 및 허깅페이스 배포 규격서
 
+## 📂 리포지토리 파일 구성 (Repository Contents)
+
+* `README.md`: 영문 글로벌 모델 카드 및 벤치마크 가이드.
+* `README_KR.md`: 한국어 종합 기술 매뉴얼 ([한국어 매뉴얼](README_KR.md)).
+* `app.py`: FastAPI 고성능 백엔드 및 30 FPS WebSocket 물리 스트리밍 서버.
+* `train.py`: Stable-Baselines3 PPO 7자유도 로봇 팔 강화학습 엔진 (`VisualProgressCallback` 내장).
+* `evaluate.py`: 독립 5회 연속 롤아웃 성능 평가기 및 비디오 녹화기.
+* `visualizer.py`: 독립 Matplotlib 텔레메트리 시각화 및 그래프 생성 모듈.
+* `web/`: 1-화면 제로 스크롤 웹 관제 콕핏 프론트엔드 (`app.js`, `index.html`, `style.css`).
+* `results/ppo_pusher.zip`: 300,000 스텝 완성형 PPO 신경망 가중치 (평균 -32.4 pts).
+* `ppo_pusher_bundle.zip`: 가중치, 12개 체크포인트 비디오, 분석 차트가 포함된 단일 프로덕션 배포 압축본.
+* `deploy_to_hf.py`: 허깅페이스 모델 허브 원클릭 자동 배포 스크립트.
+* `requirements.txt` & `packages.txt`: 파이썬 패키지 및 OS 의존성 명세서.
+
 ---
 
 ## 🔗 오픈소스 공식 링크 (Open Source Hubs)
@@ -173,3 +187,7 @@ env.close()
 
 ## 📄 라이선스
 본 프로젝트는 MIT License를 따릅니다.
+
+---
+
+*Trained and maintained by [hwihwalab](https://huggingface.co/hwihwalab/pusher-v5-ppo) & [Hwihwa-Lab](https://github.com/Hwihwa-Lab/pusher-v5-ppo).*

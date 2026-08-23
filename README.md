@@ -195,6 +195,20 @@ This repository is governed by rigorous engineering protocols to ensure simulati
 - **[`DOCS_DATA_SCHEMA.md`](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/DOCS_DATA_SCHEMA.md)**: WebSocket Telemetry Protocol & REST Data Schema
 - **[`DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md`](https://github.com/Hwihwa-Lab/pusher-v5-ppo/blob/main/DOCS_MODEL_EVALUATION_AND_HF_DEPLOY.md)**: Benchmark Evaluation & Hugging Face Hub Pipeline
 
+## 📂 Repository Contents
+
+* `README.md`: English Model Card and benchmark performance guide.
+* `README_KR.md`: Full Korean comprehensive manual ([한국어 매뉴얼](README_KR.md)).
+* `app.py`: FastAPI high-performance backend & 30 FPS WebSocket simulation server.
+* `train.py`: Stable-Baselines3 PPO 7-DOF training engine with `VisualProgressCallback`.
+* `evaluate.py`: Standalone 5-episode deterministic policy evaluator and video recorder.
+* `visualizer.py`: Standalone Matplotlib visualizer and benchmark plotter.
+* `web/`: 1-Screen zero-scroll telemetry cockpit frontend (`app.js`, `index.html`, `style.css`).
+* `results/ppo_pusher.zip`: Pre-trained PPO neural network weights (300,000 steps, -32.4 pts).
+* `ppo_pusher_bundle.zip`: Complete production archive with weights, 12 checkpoint videos, and plots.
+* `deploy_to_hf.py`: One-click automated Hugging Face Model Hub deployer.
+* `requirements.txt` & `packages.txt`: Python and system dependency manifests.
+
 ---
 
 ## 🔗 Open Source Hubs & Project Links
@@ -206,4 +220,8 @@ This repository is governed by rigorous engineering protocols to ensure simulati
 
 ## 📄 License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+*Trained and maintained by [hwihwalab](https://huggingface.co/hwihwalab/pusher-v5-ppo) & [Hwihwa-Lab](https://github.com/Hwihwa-Lab/pusher-v5-ppo).*
 
